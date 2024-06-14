@@ -82,19 +82,3 @@ if uploaded_excel is not None and uploaded_word is not None:
         file_name="updated_document.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-
-    # Save the updated document to a BytesIO object
-    buffer = BytesIO()
-    doc.save(buffer)
-    buffer.seek(0)
-
-    st.success("Word document updated successfully!")
-
-    # Download button to download the updated Word document
-    st.download_button(
-        label="Download Updated Word Document",
-        data=buffer,
-        file_name="updated_document.docx",
-        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    )
-
