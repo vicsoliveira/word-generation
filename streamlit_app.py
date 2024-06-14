@@ -48,15 +48,15 @@ if uploaded_excel is not None and uploaded_word is not None:
         "{{Área da unidade territorial}}": df.iloc[7, df.columns.get_loc("Unnamed: 1")],
         "{{Densidade demográfica}}": df.iloc[8, df.columns.get_loc("Unnamed: 1")],
         "{{Área total}}": df.iloc[12, df.columns.get_loc("de 50 a 500 ha")],
-        "{{Plantio em nível}}": df.iloc[13, df.columns.get_loc(422)],
-        "{{Rotação de culturas}}": df.iloc[14, df.columns.get_loc(12)],
-        "{{Pousio ou descanso}}": df.iloc[15, df.columns.get_loc(51)],
-        "{{Proteção de encostas}}": df.iloc[16, df.columns.get_loc(58)],
-        "{{Recuperação de mata ciliar}}": df.iloc[17, df.columns.get_loc(4)],
-        "{{Reflorestamento de nascentes}}": df.iloc[18, df.columns.get_loc(1)],
-        "{{Estabilização de voçorocas}}": df.iloc[19, df.columns.get_loc(0)],
+        "{{Plantio em nível}}": df.iloc[13, df.columns.get_loc("422")],
+        "{{Rotação de culturas}}": df.iloc[14, df.columns.get_loc("12")],
+        "{{Pousio ou descanso}}": df.iloc[15, df.columns.get_loc("51")],
+        "{{Proteção de encostas}}": df.iloc[16, df.columns.get_loc("58")],
+        "{{Recuperação de mata ciliar}}": df.iloc[17, df.columns.get_loc("4")],
+        "{{Reflorestamento de nascentes}}": df.iloc[18, df.columns.get_loc("1")],
+        "{{Estabilização de voçorocas}}": df.iloc[19, df.columns.get_loc("0")],
         "{{Manejo florestal}}": df.iloc[20, df.columns.get_loc("1.1")],
-        "{{Outras}}": df.iloc[21, df.columns.get_loc(8)],
+        "{{Outras}}": df.iloc[21, df.columns.get_loc("8")],
         "{{PIB}}": df.iloc[17, df.columns.get_loc("Unnamed: 1")],
         "{{Percentual da agricultura}}": df.iloc[18, df.columns.get_loc("Unnamed: 1")],
         "{{Valor Adicionado Bruto Agropecuária}}": df.iloc[25, df.columns.get_loc("Unnamed: 1")],
@@ -82,3 +82,4 @@ if uploaded_excel is not None and uploaded_word is not None:
         file_name="updated_document.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
+
