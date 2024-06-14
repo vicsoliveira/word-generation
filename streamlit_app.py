@@ -1,40 +1,52 @@
-import altair as alt
-import numpy as np
-import pandas as pd
 import streamlit as st
+import pandas as pd
+from docx import Document
+from io import BytesIO
 
-"""
-# Welcome to Streamlit!
+def create_word_document(df):
+    """
+    Creates a Word document from a DataFrame.
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+    Parameters:
+    df (pd.DataFrame): DataFrame containing the data to be added to the Word document.
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+    Returns:
+    doc (Document): A Word document with the data from the DataFrame.
+    """
+    doc = Document()
+    doc.add_heading('Report Generated from Excel', level=1)
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
+    for i, row in df.iterrows():
+        doc.add_heading(f'Row {i + 1}', level=2)
+        for col in df.columns:
+            doc.add_paragraph(f'{col}: {row[col]}')
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
+    return doc
 
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
+# Streamlit app layout
+st.title('Excel to Word Document Generator')
 
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
+# File uploader to upload Excel file
+uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
 
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+if uploaded_file is not None:
+    # Read the Excel file into a DataFrame
+    df = pd.read_excel(uploaded_file, engine='openpyxl')
+
+    # Create a Word document from the DataFrame
+    doc = create_word_document(df)
+
+    # Save the document to a BytesIO object
+    buffer = BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+
+    st.success("Word document created successfully!")
+
+    # Download button to download the Word document
+    st.download_button(
+        label="Download Word Document",
+        data=buffer,
+        file_name="report.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
