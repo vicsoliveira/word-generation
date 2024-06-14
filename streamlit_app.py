@@ -24,49 +24,45 @@ def replace_placeholders(doc, data):
 # Streamlit app layout
 st.title('Excel to Word Document Generator with Template')
 
-# File uploaders for CSV file and Word template
-uploaded_csv = st.file_uploader("Choose a CSV file", type="csv")
+# File uploaders for Excel file and Word template
+uploaded_excel = st.file_uploader("Choose an Excel file", type="xlsx")
 uploaded_word = st.file_uploader("Choose a Word template", type="docx")
 
-if uploaded_csv is not None and uploaded_word is not None:
-    # Load the CSV file and inspect the first few rows
-    df = pd.read_csv(uploaded_csv)
-    st.write("Raw CSV data:")
+if uploaded_excel is not None and uploaded_word is not None:
+    # Load the Excel file with proper headers and skip metadata rows
+    df = pd.read_excel(uploaded_excel, skiprows=7, header=1, engine='openpyxl')
+
+    # Display the DataFrame columns and the first few rows for debugging
+    st.write("Columns in the Excel file:")
+    st.write(df.columns)
+    st.write("First few rows in the Excel file:")
     st.write(df.head(20))
-    
-    # Clean and align the data
-    df_cleaned = df.iloc[6:].reset_index(drop=True)
-    df_cleaned.columns = df.iloc[5]
-    df_cleaned = df_cleaned.dropna(how='all').reset_index(drop=True)
-    
-    st.write("Cleaned DataFrame:")
-    st.write(df_cleaned.head(20))
 
     # Read the Word document
     doc = Document(uploaded_word)
 
-    # Define the mapping from CSV to Word placeholders
+    # Define the mapping from Excel to Word placeholders based on inspection
     data_mapping = {
-        "{{Nome do município}}": df_cleaned.at[0, "Unnamed: 1"],
-        "{{População residente}}": df_cleaned.at[0, "População residente (Pessoas)"],
-        "{{Área da unidade territorial}}": df_cleaned.at[1, "Área da unidade territorial (Quilômetros quadrados)"],
-        "{{Densidade demográfica}}": df_cleaned.at[2, "Densidade demográfica (Habitante por quilômetro quadrado)"],
-        "{{Área total}}": df_cleaned.at[7, "Área total do estabelecimento agropecuário"],
-        "{{Plantio em nível}}": df_cleaned.at[8, "Plantio em nível"],
-        "{{Rotação de culturas}}": df_cleaned.at[9, "Rotação de culturas"],
-        "{{Pousio ou descanso}}": df_cleaned.at[10, "Pousio ou descanso de solos"],
-        "{{Proteção de encostas}}": df_cleaned.at[11, "Proteção e/ou conservação de encostas"],
-        "{{Recuperação de mata ciliar}}": df_cleaned.at[12, "Recuperação de mata ciliar"],
-        "{{Reflorestamento de nascentes}}": df_cleaned.at[13, "Reflorestamento para proteção de nascentes"],
-        "{{Estabilização de voçorocas}}": df_cleaned.at[14, "Estabilização de voçorocas"],
-        "{{Manejo florestal}}": df_cleaned.at[15, "Manejo florestal"],
-        "{{Outras}}": df_cleaned.at[16, "Outras"],
-        "{{PIB}}": df_cleaned.at[17, "Produto Interno Bruto - PIB (Mil R$)"],
-        "{{Percentual da agricultura}}": df_cleaned.at[18, "Percentual da agricultura no PIB"],
-        "{{Valor Adicionado Bruto Agropecuária}}": df_cleaned.at[25, "Valor Adicionado Bruto Agropecuária"],
-        "{{Valor Adicionado Bruto Indústria}}": df_cleaned.at[26, "Valor Adicionado Bruto Indústria"],
-        "{{Valor Adicionado Bruto Serviços}}": df_cleaned.at[27, "Valor Adicionado Bruto Serviços"],
-        "{{Valor Adicionado Bruto Administração Pública}}": df_cleaned.at[28, "Valor Adicionado Bruto Administração Pública"]
+        "{{Nome do município}}": df.iloc[0, df.columns.get_loc("Unnamed: 1")],
+        "{{População residente}}": df.iloc[6, df.columns.get_loc("Unnamed: 1")],
+        "{{Área da unidade territorial}}": df.iloc[7, df.columns.get_loc("Unnamed: 1")],
+        "{{Densidade demográfica}}": df.iloc[8, df.columns.get_loc("Unnamed: 1")],
+        "{{Área total}}": df.iloc[12, df.columns.get_loc("Área total do estabelecimento agropecuário")],
+        "{{Plantio em nível}}": df.iloc[13, df.columns.get_loc("Plantio em nível")],
+        "{{Rotação de culturas}}": df.iloc[14, df.columns.get_loc("Rotação de culturas")],
+        "{{Pousio ou descanso}}": df.iloc[15, df.columns.get_loc("Pousio ou descanso de solos")],
+        "{{Proteção de encostas}}": df.iloc[16, df.columns.get_loc("Proteção e/ou conservação de encostas")],
+        "{{Recuperação de mata ciliar}}": df.iloc[17, df.columns.get_loc("Recuperação de mata ciliar")],
+        "{{Reflorestamento de nascentes}}": df.iloc[18, df.columns.get_loc("Reflorestamento para proteção de nascentes")],
+        "{{Estabilização de voçorocas}}": df.iloc[19, df.columns.get_loc("Estabilização de voçorocas")],
+        "{{Manejo florestal}}": df.iloc[20, df.columns.get_loc("Manejo florestal")],
+        "{{Outras}}": df.iloc[21, df.columns.get_loc("Outras")],
+        "{{PIB}}": df.iloc[26, df.columns.get_loc("Unnamed: 1")],
+        "{{Percentual da agricultura}}": df.iloc[27, df.columns.get_loc("Unnamed: 1")],
+        "{{Valor Adicionado Bruto Agropecuária}}": df.iloc[34, df.columns.get_loc("Unnamed: 1")],
+        "{{Valor Adicionado Bruto Indústria}}": df.iloc[35, df.columns.get_loc("Unnamed: 1")],
+        "{{Valor Adicionado Bruto Serviços}}": df.iloc[36, df.columns.get_loc("Unnamed: 1")],
+        "{{Valor Adicionado Bruto Administração Pública}}": df.iloc[37, df.columns.get_loc("Unnamed: 1")]
     }
 
     # Replace placeholders in the Word document
@@ -86,5 +82,3 @@ if uploaded_csv is not None and uploaded_word is not None:
         file_name="updated_document.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-
-
