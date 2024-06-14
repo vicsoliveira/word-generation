@@ -3,50 +3,77 @@ import pandas as pd
 from docx import Document
 from io import BytesIO
 
-def create_word_document(df):
+def replace_placeholders(doc, data):
     """
-    Creates a Word document from a DataFrame.
+    Replace placeholders in the Word document with data from the DataFrame.
 
     Parameters:
-    df (pd.DataFrame): DataFrame containing the data to be added to the Word document.
-
-    Returns:
-    doc (Document): A Word document with the data from the DataFrame.
+    doc (Document): The Word document object.
+    data (dict): A dictionary with placeholders as keys and replacement data as values.
     """
-    doc = Document()
-    doc.add_heading('Report Generated from Excel', level=1)
-
-    for i, row in df.iterrows():
-        doc.add_heading(f'Row {i + 1}', level=2)
-        for col in df.columns:
-            doc.add_paragraph(f'{col}: {row[col]}')
-
+    for p in doc.paragraphs:
+        for key, value in data.items():
+            if key in p.text:
+                inline = p.runs
+                for i in range(len(inline)):
+                    if key in inline[i].text:
+                        text = inline[i].text.replace(key, str(value))
+                        inline[i].text = text
     return doc
 
 # Streamlit app layout
-st.title('Excel to Word Document Generator')
+st.title('Excel to Word Document Generator with Template')
 
-# File uploader to upload Excel file
-uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
+# File uploaders for Excel file and Word template
+uploaded_excel = st.file_uploader("Choose an Excel file", type="xlsx")
+uploaded_word = st.file_uploader("Choose a Word template", type="docx")
 
-if uploaded_file is not None:
+if uploaded_excel is not None and uploaded_word is not None:
     # Read the Excel file into a DataFrame
-    df = pd.read_excel(uploaded_file, engine='openpyxl')
+    df = pd.read_excel(uploaded_excel, skiprows=4, engine='openpyxl')
 
-    # Create a Word document from the DataFrame
-    doc = create_word_document(df)
+    # Read the Word document
+    doc = Document(uploaded_word)
 
-    # Save the document to a BytesIO object
+    # Define the mapping from Excel to Word placeholders
+    data_mapping = {
+        "{{Nome do município}}": df.loc[0, "Unnamed: 3"],
+        "{{Área total}}": df.loc[0, "Unnamed: 7"],
+        "{{Plantio em nível}}": df.loc[0, "Unnamed: 9"],
+        "{{Rotação de culturas}}": df.loc[0, "Unnamed: 10"],
+        "{{Pousio ou descanso}}": df.loc[0, "Unnamed: 11"],
+        "{{Proteção de encostas}}": df.loc[0, "Unnamed: 12"],
+        "{{Recuperação de mata ciliar}}": df.loc[0, "Unnamed: 13"],
+        "{{Reflorestamento de nascentes}}": df.loc[0, "Unnamed: 14"],
+        "{{Estabilização de voçorocas}}": df.loc[0, "Unnamed: 15"],
+        "{{Manejo florestal}}": df.loc[0, "Unnamed: 16"],
+        "{{Outras}}": df.loc[0, "Unnamed: 17"],
+        "{{População residente}}": df.loc[10, "Tucano"],
+        "{{Área da unidade territorial}}": df.loc[11, "Tucano"],
+        "{{Densidade demográfica}}": df.loc[12, "Tucano"],
+        "{{PIB}}": df.loc[17, "Tucano"],
+        "{{Percentual da agricultura}}": df.loc[18, "Tucano"],
+        "{{Valor Adicionado Bruto Agropecuária}}": df.loc[25, "Tucano"],
+        "{{Valor Adicionado Bruto Indústria}}": df.loc[26, "Tucano"],
+        "{{Valor Adicionado Bruto Serviços}}": df.loc[27, "Tucano"],
+        "{{Valor Adicionado Bruto Administração Pública}}": df.loc[28, "Tucano"]
+    }
+
+    # Replace placeholders in the Word document
+    doc = replace_placeholders(doc, data_mapping)
+
+    # Save the updated document to a BytesIO object
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
 
-    st.success("Word document created successfully!")
+    st.success("Word document updated successfully!")
 
-    # Download button to download the Word document
+    # Download button to download the updated Word document
     st.download_button(
-        label="Download Word Document",
+        label="Download Updated Word Document",
         data=buffer,
-        file_name="report.docx",
+        file_name="updated_document.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
+
