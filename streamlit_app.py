@@ -32,10 +32,14 @@ if uploaded_excel is not None and uploaded_word is not None:
     # Read the Excel file into a DataFrame
     df = pd.read_excel(uploaded_excel, skiprows=4, engine='openpyxl')
 
+    # Inspect columns
+    st.write("Columns in the Excel file:", df.columns)
+
     # Read the Word document
     doc = Document(uploaded_word)
 
     # Define the mapping from Excel to Word placeholders
+    # Update this mapping based on your actual placeholders and column names
     data_mapping = {
         "{{Nome do município}}": df.loc[0, "Unnamed: 3"],
         "{{Área total}}": df.loc[0, "Unnamed: 7"],
@@ -76,4 +80,3 @@ if uploaded_excel is not None and uploaded_word is not None:
         file_name="updated_document.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
-
