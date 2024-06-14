@@ -35,6 +35,48 @@ def preprocess_excel(df):
     df.fillna(method='ffill', axis=0, inplace=True)
     return df
 
+def inspect_and_map_data(df):
+    """
+    Inspect the DataFrame to determine the correct data mappings for placeholders.
+    
+    Parameters:
+    df (DataFrame): The preprocessed DataFrame.
+    
+    Returns:
+    dict: A dictionary with placeholders as keys and corresponding DataFrame values as values.
+    """
+    # Safe access to DataFrame values with fallback
+    def safe_get_value(df, row, col):
+        try:
+            return df.iloc[row, col]
+        except IndexError:
+            return "N/A"
+
+    # Define the mapping from Excel to Word placeholders based on inspection
+    data_mapping = {
+        "{{Nome do município}}": safe_get_value(df, 0, 1),  # Adjust based on actual data
+        "{{População residente}}": safe_get_value(df, 6, 1),  # Adjust based on actual data
+        "{{Área da unidade territorial}}": safe_get_value(df, 7, 1),  # Adjust based on actual data
+        "{{Densidade demográfica}}": safe_get_value(df, 8, 1),  # Adjust based on actual data
+        "{{Área total}}": safe_get_value(df, 12, 7),  # Adjust based on actual data
+        "{{Plantio em nível}}": safe_get_value(df, 13, 8),  # Adjust based on actual data
+        "{{Rotação de culturas}}": safe_get_value(df, 14, 9),  # Adjust based on actual data
+        "{{Pousio ou descanso}}": safe_get_value(df, 15, 10),  # Adjust based on actual data
+        "{{Proteção de encostas}}": safe_get_value(df, 16, 11),  # Adjust based on actual data
+        "{{Recuperação de mata ciliar}}": safe_get_value(df, 17, 12),  # Adjust based on actual data
+        "{{Reflorestamento de nascentes}}": safe_get_value(df, 18, 13),  # Adjust based on actual data
+        "{{Estabilização de voçorocas}}": safe_get_value(df, 19, 14),  # Adjust based on actual data
+        "{{Manejo florestal}}": safe_get_value(df, 20, 15),  # Adjust based on actual data
+        "{{Outras}}": safe_get_value(df, 21, 16),  # Adjust based on actual data
+        "{{PIB}}": safe_get_value(df, 17, 1),  # Adjust based on actual data
+        "{{Percentual da agricultura}}": safe_get_value(df, 18, 1),  # Adjust based on actual data
+        "{{Valor Adicionado Bruto Agropecuária}}": safe_get_value(df, 25, 1),  # Adjust based on actual data
+        "{{Valor Adicionado Bruto Indústria}}": safe_get_value(df, 26, 1),  # Adjust based on actual data
+        "{{Valor Adicionado Bruto Serviços}}": safe_get_value(df, 27, 1),  # Adjust based on actual data
+        "{{Valor Adicionado Bruto Administração Pública}}": safe_get_value(df, 28, 1)  # Adjust based on actual data
+    }
+    return data_mapping
+
 # Streamlit app layout
 st.title('Excel to Word Document Generator with Template')
 
@@ -55,32 +97,11 @@ if uploaded_excel is not None and uploaded_word is not None:
     st.write("First few rows in the Excel file:")
     st.write(df.head(20))
 
+    # Inspect the DataFrame and map the data
+    data_mapping = inspect_and_map_data(df)
+
     # Read the Word document
     doc = Document(uploaded_word)
-
-    # Define the mapping from Excel to Word placeholders based on inspection
-    data_mapping = {
-        "{{Nome do município}}": df.iloc[0, 1],  # Adjust based on actual data
-        "{{População residente}}": df.iloc[6, 2],  # Adjust based on actual data
-        "{{Área da unidade territorial}}": df.iloc[7, 2],  # Adjust based on actual data
-        "{{Densidade demográfica}}": df.iloc[8, 2],  # Adjust based on actual data
-        "{{Área total}}": df.iloc[12, 7],  # Adjust based on actual data
-        "{{Plantio em nível}}": df.iloc[13, 8],  # Adjust based on actual data
-        "{{Rotação de culturas}}": df.iloc[14, 9],  # Adjust based on actual data
-        "{{Pousio ou descanso}}": df.iloc[15, 10],  # Adjust based on actual data
-        "{{Proteção de encostas}}": df.iloc[16, 11],  # Adjust based on actual data
-        "{{Recuperação de mata ciliar}}": df.iloc[17, 12],  # Adjust based on actual data
-        "{{Reflorestamento de nascentes}}": df.iloc[18, 13],  # Adjust based on actual data
-        "{{Estabilização de voçorocas}}": df.iloc[19, 14],  # Adjust based on actual data
-        "{{Manejo florestal}}": df.iloc[20, 15],  # Adjust based on actual data
-        "{{Outras}}": df.iloc[21, 16],  # Adjust based on actual data
-        "{{PIB}}": df.iloc[17, 2],  # Adjust based on actual data
-        "{{Percentual da agricultura}}": df.iloc[18, 2],  # Adjust based on actual data
-        "{{Valor Adicionado Bruto Agropecuária}}": df.iloc[25, 2],  # Adjust based on actual data
-        "{{Valor Adicionado Bruto Indústria}}": df.iloc[26, 2],  # Adjust based on actual data
-        "{{Valor Adicionado Bruto Serviços}}": df.iloc[27, 2],  # Adjust based on actual data
-        "{{Valor Adicionado Bruto Administração Pública}}": df.iloc[28, 2]  # Adjust based on actual data
-    }
 
     # Replace placeholders in the Word document
     doc = replace_placeholders(doc, data_mapping)
