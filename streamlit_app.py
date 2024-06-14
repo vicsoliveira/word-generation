@@ -82,3 +82,4 @@ if uploaded_excel is not None and uploaded_word is not None:
         file_name="updated_document.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
+
