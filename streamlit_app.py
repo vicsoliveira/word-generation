@@ -29,38 +29,38 @@ uploaded_excel = st.file_uploader("Choose an Excel file", type="xlsx")
 uploaded_word = st.file_uploader("Choose a Word template", type="docx")
 
 if uploaded_excel is not None and uploaded_word is not None:
-    # Read the Excel file into a DataFrame
-    df = pd.read_excel(uploaded_excel, skiprows=4, engine='openpyxl')
+    # Load the Excel file with proper headers and skip metadata rows
+    df = pd.read_excel(uploaded_excel, skiprows=7, header=1, engine='openpyxl')
 
-    # Inspect columns
-    st.write("Columns in the Excel file:", df.columns)
+    # Display the DataFrame columns for debugging
+    st.write("Columns in the Excel file:")
+    st.write(df.columns)
 
     # Read the Word document
     doc = Document(uploaded_word)
 
     # Define the mapping from Excel to Word placeholders
-    # Update this mapping based on your actual placeholders and column names
     data_mapping = {
-        "{{Nome do município}}": df.loc[0, "Unnamed: 3"],
-        "{{Área total}}": df.loc[0, "Unnamed: 7"],
-        "{{Plantio em nível}}": df.loc[0, "Unnamed: 9"],
-        "{{Rotação de culturas}}": df.loc[0, "Unnamed: 10"],
-        "{{Pousio ou descanso}}": df.loc[0, "Unnamed: 11"],
-        "{{Proteção de encostas}}": df.loc[0, "Unnamed: 12"],
-        "{{Recuperação de mata ciliar}}": df.loc[0, "Unnamed: 13"],
-        "{{Reflorestamento de nascentes}}": df.loc[0, "Unnamed: 14"],
-        "{{Estabilização de voçorocas}}": df.loc[0, "Unnamed: 15"],
-        "{{Manejo florestal}}": df.loc[0, "Unnamed: 16"],
-        "{{Outras}}": df.loc[0, "Unnamed: 17"],
-        "{{População residente}}": df.loc[10, "Tucano"],
-        "{{Área da unidade territorial}}": df.loc[11, "Tucano"],
-        "{{Densidade demográfica}}": df.loc[12, "Tucano"],
-        "{{PIB}}": df.loc[17, "Tucano"],
-        "{{Percentual da agricultura}}": df.loc[18, "Tucano"],
-        "{{Valor Adicionado Bruto Agropecuária}}": df.loc[25, "Tucano"],
-        "{{Valor Adicionado Bruto Indústria}}": df.loc[26, "Tucano"],
-        "{{Valor Adicionado Bruto Serviços}}": df.loc[27, "Tucano"],
-        "{{Valor Adicionado Bruto Administração Pública}}": df.loc[28, "Tucano"]
+        "{{Nome do município}}": df.at[0, "Nome do município"],
+        "{{Área total}}": df.at[0, "Área total do estabelecimento agropecuário"],
+        "{{Plantio em nível}}": df.at[0, "Plantio em nível"],
+        "{{Rotação de culturas}}": df.at[0, "Rotação de culturas"],
+        "{{Pousio ou descanso}}": df.at[0, "Pousio ou descanso de solos"],
+        "{{Proteção de encostas}}": df.at[0, "Proteção e/ou conservação de encostas"],
+        "{{Recuperação de mata ciliar}}": df.at[0, "Recuperação de mata ciliar"],
+        "{{Reflorestamento de nascentes}}": df.at[0, "Reflorestamento para proteção de nascentes"],
+        "{{Estabilização de voçorocas}}": df.at[0, "Estabilização de voçorocas"],
+        "{{Manejo florestal}}": df.at[0, "Manejo florestal"],
+        "{{Outras}}": df.at[0, "Outras"],
+        "{{População residente}}": df.at[10, "Tucano"],
+        "{{Área da unidade territorial}}": df.at[11, "Tucano"],
+        "{{Densidade demográfica}}": df.at[12, "Tucano"],
+        "{{PIB}}": df.at[17, "Tucano"],
+        "{{Percentual da agricultura}}": df.at[18, "Tucano"],
+        "{{Valor Adicionado Bruto Agropecuária}}": df.at[25, "Tucano"],
+        "{{Valor Adicionado Bruto Indústria}}": df.at[26, "Tucano"],
+        "{{Valor Adicionado Bruto Serviços}}": df.at[27, "Tucano"],
+        "{{Valor Adicionado Bruto Administração Pública}}": df.at[28, "Tucano"]
     }
 
     # Replace placeholders in the Word document
