@@ -41,17 +41,17 @@ if uploaded_excel is not None and uploaded_word is not None:
 
     # Define the mapping from Excel to Word placeholders
     data_mapping = {
-        "{{Nome do município}}": df.at[0, "Nome do município"],
-        "{{Área total}}": df.at[0, "Área total do estabelecimento agropecuário"],
-        "{{Plantio em nível}}": df.at[0, "Plantio em nível"],
-        "{{Rotação de culturas}}": df.at[0, "Rotação de culturas"],
-        "{{Pousio ou descanso}}": df.at[0, "Pousio ou descanso de solos"],
-        "{{Proteção de encostas}}": df.at[0, "Proteção e/ou conservação de encostas"],
-        "{{Recuperação de mata ciliar}}": df.at[0, "Recuperação de mata ciliar"],
-        "{{Reflorestamento de nascentes}}": df.at[0, "Reflorestamento para proteção de nascentes"],
-        "{{Estabilização de voçorocas}}": df.at[0, "Estabilização de voçorocas"],
-        "{{Manejo florestal}}": df.at[0, "Manejo florestal"],
-        "{{Outras}}": df.at[0, "Outras"],
+        "{{Nome do município}}": df.at[0, "Unnamed: 3"],
+        "{{Área total}}": df.at[0, "de 50 a 500 ha"], # Adjusted based on inspection
+        "{{Plantio em nível}}": df.at[0, 422], # Column index or appropriate name
+        "{{Rotação de culturas}}": df.at[0, 12],
+        "{{Pousio ou descanso}}": df.at[0, 51],
+        "{{Proteção de encostas}}": df.at[0, 58],
+        "{{Recuperação de mata ciliar}}": df.at[0, 4],
+        "{{Reflorestamento de nascentes}}": df.at[0, 1],
+        "{{Estabilização de voçorocas}}": df.at[0, 0],
+        "{{Manejo florestal}}": df.at[0, '1.1'], # Example, adjust based on actual columns
+        "{{Outras}}": df.at[0, 8],
         "{{População residente}}": df.at[10, "Tucano"],
         "{{Área da unidade territorial}}": df.at[11, "Tucano"],
         "{{Densidade demográfica}}": df.at[12, "Tucano"],
@@ -80,3 +80,4 @@ if uploaded_excel is not None and uploaded_word is not None:
         file_name="updated_document.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
+
