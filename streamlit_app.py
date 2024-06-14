@@ -6,7 +6,7 @@ from io import BytesIO
 def replace_placeholders(doc, data):
     """
     Replace placeholders in the Word document with data from the DataFrame.
-
+    
     Parameters:
     doc (Document): The Word document object.
     data (dict): A dictionary with placeholders as keys and replacement data as values.
@@ -44,9 +44,9 @@ if uploaded_excel is not None and uploaded_word is not None:
     # Define the mapping from Excel to Word placeholders based on inspection
     data_mapping = {
         "{{Nome do município}}": df.iloc[0, df.columns.get_loc("Unnamed: 1")],
-        "{{População residente}}": df.iloc[10, df.columns.get_loc("População residente (Pessoas)")],
-        "{{Área da unidade territorial}}": df.iloc[11, df.columns.get_loc("Área da unidade territorial (Quilômetros quadrados)")],
-        "{{Densidade demográfica}}": df.iloc[12, df.columns.get_loc("Densidade demográfica (Habitante por quilômetro quadrado)")],
+        "{{População residente}}": df.iloc[6, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
+        "{{Área da unidade territorial}}": df.iloc[7, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
+        "{{Densidade demográfica}}": df.iloc[8, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
         "{{Área total}}": df.iloc[12, df.columns.get_loc("de 50 a 500 ha")],
         "{{Plantio em nível}}": df.iloc[13, df.columns.get_loc(422)],
         "{{Rotação de culturas}}": df.iloc[14, df.columns.get_loc(12)],
@@ -57,12 +57,12 @@ if uploaded_excel is not None and uploaded_word is not None:
         "{{Estabilização de voçorocas}}": df.iloc[19, df.columns.get_loc(0)],
         "{{Manejo florestal}}": df.iloc[20, df.columns.get_loc("1.1")],
         "{{Outras}}": df.iloc[21, df.columns.get_loc(8)],
-        "{{PIB}}": df.iloc[26, df.columns.get_loc("Unnamed: 2")],
-        "{{Percentual da agricultura}}": df.iloc[27, df.columns.get_loc("Unnamed: 2")],
-        "{{Valor Adicionado Bruto Agropecuária}}": df.iloc[34, df.columns.get_loc("Unnamed: 2")],
-        "{{Valor Adicionado Bruto Indústria}}": df.iloc[35, df.columns.get_loc("Unnamed: 2")],
-        "{{Valor Adicionado Bruto Serviços}}": df.iloc[36, df.columns.get_loc("Unnamed: 2")],
-        "{{Valor Adicionado Bruto Administração Pública}}": df.iloc[37, df.columns.get_loc("Unnamed: 2")]
+        "{{PIB}}": df.iloc[17, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
+        "{{Percentual da agricultura}}": df.iloc[18, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
+        "{{Valor Adicionado Bruto Agropecuária}}": df.iloc[25, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
+        "{{Valor Adicionado Bruto Indústria}}": df.iloc[26, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
+        "{{Valor Adicionado Bruto Serviços}}": df.iloc[27, df.columns.get_loc("Unnamed: 1")],  # Adjusted based on actual data
+        "{{Valor Adicionado Bruto Administração Pública}}": df.iloc[28, df.columns.get_loc("Unnamed: 1")]  # Adjusted based on actual data
     }
 
     # Replace placeholders in the Word document
